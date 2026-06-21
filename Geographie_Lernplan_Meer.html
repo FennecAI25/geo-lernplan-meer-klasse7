@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Geographie Lernplan – Das Meer (Klasse 7)</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;background:#f5f5f0;color:#1a1a1a;font-size:15px}
+  .app{max-width:760px;margin:0 auto;padding:1.5rem 1rem 3rem}
+  h1{font-size:20px;font-weight:600;margin-bottom:4px}
+  .subtitle{font-size:13px;color:#666;margin-bottom:1.5rem}
+  
+  .tab-bar{display:flex;gap:0;margin-bottom:1.5rem;border:1px solid #ddd;border-radius:10px;overflow:hidden;background:#fff}
+  .tab{flex:1;padding:10px 6px;font-size:13px;border:none;background:none;cursor:pointer;color:#666;border-right:1px solid #ddd;transition:background .15s;font-family:inherit}
+  .tab:last-child{border-right:none}
+  .tab.active{background:#1a56db;color:#fff;font-weight:500}
+  .panel{display:none}.panel.active{display:block}
+
+  /* Progress */
+  .prog-wrap{margin-bottom:1.2rem}
+  .prog-label{font-size:12px;color:#666;margin-bottom:5px;display:flex;justify-content:space-between}
+  .prog-bar{height:6px;background:#e5e5e5;border-radius:3px;overflow:hidden}
+  .prog-fill{height:100%;background:#1a56db;border-radius:3px;transition:width .4s}
+
+  /* Day cards */
+  .day-card{background:#fff;border:1px solid #e5e5e5;border-radius:12px;padding:1rem 1.25rem;margin-bottom:12px}
+  .day-header{display:flex;align-items:center;gap:8px;margin-bottom:10px;flex-wrap:wrap}
+  .badge{display:inline-block;font-size:11px;font-weight:500;padding:3px 9px;border-radius:20px;white-space:nowrap}
+  .badge-date{background:#e8f0fe;color:#1a56db}
+  .badge-st{background:#fef3e2;color:#854F0B}
+  .badge-exam{background:#fde8e8;color:#9B1C1C;font-weight:700}
+  .day-title{font-weight:500;font-size:14px;flex:1}
+  .done-btn{margin-left:auto;font-size:11px;border:1px solid #ddd;border-radius:20px;padding:3px 10px;background:none;cursor:pointer;color:#666;font-family:inherit}
+  .done-btn.done{background:#e8f5e9;color:#1a7c34;border-color:#a5d6a7}
+
+  .session{display:flex;align-items:flex-start;gap:8px;margin-bottom:6px}
+  .stime{color:#888;min-width:68px;font-size:12px;padding-top:3px}
+  .sblock{flex:1;border-radius:7px;padding:5px 10px;font-size:13px;line-height:1.5}
+  .sblock.lern{background:#e8f0fe;color:#1e3a8a}
+  .sblock.pause{background:#e8f5e9;color:#1a4731}
+  .sblock.quiz{background:#fef3e2;color:#633806}
+  .sblock.wdh{background:#f0edff;color:#3C3489}
+
+  /* Summary */
+  .topic-card{background:#fff;border:1px solid #e5e5e5;border-radius:12px;padding:1rem 1.25rem;margin-bottom:10px}
+  .topic-hdr{display:flex;align-items:center;gap:8px;cursor:pointer;user-select:none}
+  .topic-hdr .st-tag{background:#e8f0fe;color:#1a56db;font-size:11px;font-weight:500;padding:2px 8px;border-radius:20px;white-space:nowrap}
+  .topic-hdr .ttitle{font-weight:500;font-size:14px;flex:1}
+  .topic-hdr .chev{font-size:18px;color:#aaa;transition:transform .2s;line-height:1}
+  .topic-body{display:none;margin-top:12px;border-top:1px solid #f0f0f0;padding-top:12px}
+  .topic-body.open{display:block}
+  .kw-wrap{margin-bottom:10px}
+  .kw{display:inline-block;background:#f0edff;color:#3C3489;font-size:11px;padding:2px 7px;border-radius:20px;margin:2px}
+  .topic-body ul{padding-left:1.2rem;font-size:13px;line-height:1.75;color:#333}
+  .topic-body li{margin-bottom:2px}
+  .tip-box{background:#fef3e2;border-radius:7px;padding:8px 12px;font-size:12px;color:#633806;margin-top:8px}
+
+  /* Exercises */
+  .ex-card{background:#fff;border:1px solid #e5e5e5;border-radius:12px;padding:1rem 1.25rem;margin-bottom:12px}
+  .ex-num{font-size:11px;font-weight:600;color:#1a56db;margin-bottom:6px}
+  .ex-q{font-size:14px;font-weight:500;margin-bottom:6px;line-height:1.5}
+  .ex-hint{font-size:12px;color:#888;margin-bottom:10px;background:#f9f9f9;border-radius:6px;padding:6px 10px}
+  .show-btn{border:1px solid #ddd;border-radius:7px;padding:6px 14px;font-size:12px;background:none;cursor:pointer;color:#444;font-family:inherit}
+  .show-btn:hover{background:#f5f5f5}
+  .answer{display:none;margin-top:10px;background:#e8f5e9;border-radius:8px;padding:10px 14px;font-size:13px;color:#1a4731;line-height:1.7}
+  .answer.open{display:block}
+  .answer ul{padding-left:1.2rem}
+  .answer li{margin-bottom:3px}
+
+  /* Quiz */
+  .quiz-card{background:#fff;border:1px solid #e5e5e5;border-radius:12px;padding:1.25rem;margin-bottom:12px}
+  .quiz-prog{font-size:12px;color:#888;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center}
+  .quiz-q{font-size:14px;font-weight:500;margin-bottom:14px;line-height:1.5}
+  .quiz-opts{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
+  .qopt{border:1px solid #ddd;border-radius:8px;padding:10px 12px;font-size:13px;cursor:pointer;background:#fff;text-align:left;color:#1a1a1a;transition:background .15s;font-family:inherit;line-height:1.4}
+  .qopt:hover{background:#f5f5f5}
+  .qopt.correct{background:#e8f5e9;color:#1a4731;border-color:#a5d6a7;font-weight:500}
+  .qopt.wrong{background:#fde8e8;color:#9B1C1C;border-color:#f5c6c6}
+  .qopt:disabled{cursor:default}
+  .q-fb{font-size:13px;color:#666;min-height:18px;margin-bottom:10px}
+  .quiz-nav{display:flex;justify-content:flex-end}
+  .next-btn{background:#1a56db;color:#fff;border:none;border-radius:8px;padding:8px 20px;font-size:13px;cursor:pointer;font-family:inherit}
+  .next-btn:hover{background:#1648c5}
+
+  /* Score */
+  .score-box{background:#fff;border:1px solid #e5e5e5;border-radius:12px;padding:2.5rem 1.5rem;text-align:center}
+  .score-big{font-size:56px;font-weight:700;color:#1a56db;line-height:1}
+  .score-label{font-size:14px;color:#666;margin-top:8px;margin-bottom:1.5rem}
+  .score-msg{font-size:15px;font-weight:500;margin-bottom:1.5rem}
+  .restart-btn{border:1px solid #ddd;border-radius:8px;padding:8px 20px;font-size:13px;background:none;cursor:pointer;font-family:inherit;color:#444}
+  .restart-btn:hover{background:#f5f5f5}
+
+  /* Countdown */
+  .countdown{background:#fde8e8;border:1px solid #f5c6c6;border-radius:10px;padding:10px 16px;font-size:13px;color:#9B1C1C;margin-bottom:1.2rem;display:flex;align-items:center;gap:8px;font-weight:500}
+
+  @media(max-width:500px){
+    .quiz-opts{grid-template-columns:1fr}
+    .tab{font-size:11px;padding:9px 4px}
+    .day-header{gap:5px}
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <h1>&#127758; Geographie-Lernplan – Das Meer</h1>
+  <p class="subtitle">Klasse 7 Gymnasium Bayern &nbsp;·&nbsp; Schulaufgabe: Donnerstag, 02.07.2026 &nbsp;·&nbsp; 30 min/Tag</p>
+
+  <div class="countdown" id="countdown">&#128197; Berechne verbleibende Tage...</div>
+
+  <div class="tab-bar">
+    <button class="tab active" onclick="showPanel('plan',this)">&#128197; Lernplan</button>
+    <button class="tab" onclick="showPanel('summary',this)">&#128218; Zusammenfassung</button>
+    <button class="tab" onclick="showPanel('uebungen',this)">&#9997;&#65039; Übungen</button>
+    <button class="tab" onclick="showPanel('quiz',this)">&#11088; Quiz</button>
+  </div>
+
+  <!-- LERNPLAN -->
+  <div class="panel active" id="panel-plan">
+    <div class="prog-wrap">
+      <div class="prog-label"><span id="prog-label">0 von 10 Einheiten erledigt</span><span id="prog-pct">0%</span></div>
+      <div class="prog-bar"><div class="prog-fill" id="prog-fill" style="width:0%"></div></div>
+    </div>
+    <div id="days-container"></div>
+  </div>
+
+  <!-- ZUSAMMENFASSUNG -->
+  <div class="panel" id="panel-summary">
+    <div id="topics-container"></div>
+  </div>
+
+  <!-- ÜBUNGEN -->
+  <div class="panel" id="panel-uebungen">
+    <div id="exercises-container"></div>
+  </div>
+
+  <!-- QUIZ -->
+  <div class="panel" id="panel-quiz">
+    <div id="quiz-container">
+      <div class="quiz-card">
+        <div class="quiz-prog">
+          <span id="q-counter">Frage 1 von 12</span>
+          <span id="q-score">0 richtig</span>
+        </div>
+        <div class="quiz-q" id="q-text"></div>
+        <div class="quiz-opts" id="q-opts"></div>
+        <div class="q-fb" id="q-fb"></div>
+        <div class="quiz-nav"><button class="next-btn" onclick="nextQ()">Weiter &#8594;</button></div>
+      </div>
+    </div>
+    <div class="score-box" id="score-box" style="display:none">
+      <div class="score-big" id="score-num"></div>
+      <div class="score-label" id="score-pct"></div>
+      <div class="score-msg" id="score-msg"></div>
+      <button class="restart-btn" onclick="restartQuiz()">&#8635; Nochmal versuchen</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const DAYS = [
+  {date:"So, 22.06.",st:"Station 2",title:"Küstenformen",sessions:[
+    {type:"lern",time:"0–12 min",text:"Station 2 lesen: Fjord, Schäre, Delta, Flachküste – Merkmale & Entstehung"},
+    {type:"pause",time:"12–14 min",text:"Kurze Pause – Wasser trinken!"},
+    {type:"lern",time:"14–24 min",text:"Tabelle anlegen: Name / Merkmale / Entstehung / Nutzung / Europa-Beispiel"},
+    {type:"quiz",time:"24–30 min",text:"Quiz-Tab öffnen – Fragen zu Küstenformen beantworten"}
+  ]},
+  {date:"Mo, 23.06.",st:"Station 3",title:"Überfischung",sessions:[
+    {type:"lern",time:"0–12 min",text:"Station 3 lesen: Fabrikschiff, Plankton, Überfischung, MSC-Siegel"},
+    {type:"pause",time:"12–14 min",text:"Pause"},
+    {type:"lern",time:"14–24 min",text:"Flächendiagramm (Abb. 3) nach 4-Schritt-Methode auswerten (AB Diagramme)"},
+    {type:"quiz",time:"24–30 min",text:"Übungsaufgabe 3 im Übungen-Tab bearbeiten"}
+  ]},
+  {date:"Di, 24.06.",st:"Station 4",title:"Aquakultur",sessions:[
+    {type:"lern",time:"0–12 min",text:"Station 4 lesen: Käfignetz, Aquaponics, Kreislauf, ASC-Siegel, Probleme"},
+    {type:"pause",time:"12–14 min",text:"Pause"},
+    {type:"lern",time:"14–24 min",text:"Bardiagramm Abb. 4 auswerten: Wildfang vs. Aquakultur 2002–2016"},
+    {type:"quiz",time:"24–30 min",text:"Quiz-Tab: Fragen Aquakultur & Fischerei"}
+  ]},
+  {date:"Mi, 25.06.",st:"Station 5",title:"Rotterdam / Europoort",sessions:[
+    {type:"lern",time:"0–12 min",text:"Station 5 lesen: Standortvorteile, Container (TEU), Güterumschlag, Hinterland"},
+    {type:"pause",time:"12–14 min",text:"Pause"},
+    {type:"lern",time:"14–24 min",text:"Schaubild skizzieren: Warum Rotterdam? (Lage + Verkehr + Wirtschaft)"},
+    {type:"quiz",time:"24–30 min",text:"Übungsaufgabe 4 im Übungen-Tab bearbeiten"}
+  ]},
+  {date:"Do, 26.06.",st:"Station 6",title:"Nordsee-Rohstoffe",sessions:[
+    {type:"lern",time:"0–12 min",text:"Station 6 lesen: Offshore-Förderung, Pipelines, Troll-Plattform, Gefahren"},
+    {type:"pause",time:"12–14 min",text:"Pause"},
+    {type:"lern",time:"14–24 min",text:"Säulendiagramm aus Tabelle 4 erstellen & nach 4-Schritt-Methode auswerten"},
+    {type:"quiz",time:"24–30 min",text:"Quiz-Tab: alle Fragen komplett durchlaufen"}
+  ]},
+  {date:"Fr, 27.06.",st:"Station 7",title:"Tourismus / Mallorca",sessions:[
+    {type:"lern",time:"0–12 min",text:"Station 7 lesen: Massentourismus Pro/Contra, Tourismussteuer ab 01.07.2016"},
+    {type:"pause",time:"12–14 min",text:"Pause"},
+    {type:"lern",time:"14–24 min",text:"Klimadiagramme Palma & Ingolstadt vergleichen – Mittelmeerklima erkennen"},
+    {type:"quiz",time:"24–30 min",text:"Übungsaufgabe 5 im Übungen-Tab bearbeiten"}
+  ]},
+  {date:"Sa, 28.06.",st:"Station 8",title:"Wattenmeer",sessions:[
+    {type:"lern",time:"0–12 min",text:"Station 8 lesen: Bedeutung, Gefahren, trilateraler Schutz NL/D/DK"},
+    {type:"pause",time:"12–14 min",text:"Pause"},
+    {type:"lern",time:"14–24 min",text:"Zeitstrahl Zusammenarbeit 1978–2014 aus Station 8 skizzieren"},
+    {type:"quiz",time:"24–30 min",text:"Quiz komplett – Schwachstellen notieren"}
+  ]},
+  {date:"So, 29.06.",st:"Alle Stationen",title:"Diagramm-Training",sessions:[
+    {type:"wdh",time:"0–15 min",text:"AB 'Diagramme auswerten' nochmal lesen – 4 Schritte auswendig können"},
+    {type:"pause",time:"15–17 min",text:"Pause"},
+    {type:"wdh",time:"17–30 min",text:"Fischbestands-Diagramm UND Erdöl-Säulendiagramm schriftlich auswerten (je 1 Seite)"}
+  ]},
+  {date:"Mo, 30.06.",st:"Alle Stationen",title:"Europakarte üben",sessions:[
+    {type:"wdh",time:"0–12 min",text:"Stumme Europakarte: Rotterdam, Norwegen (Fjord), Schweden (Schäre), Niederlande (Delta), Wattenmeer einzeichnen"},
+    {type:"pause",time:"12–14 min",text:"Pause"},
+    {type:"wdh",time:"14–24 min",text:"Zusammenfassung-Tab: alle 7 Themen aufklappen & Schlüsselbegriffe abfragen"},
+    {type:"quiz",time:"24–30 min",text:"Quiz-Generalprobe – Ziel: 10/12 oder mehr"}
+  ]},
+  {date:"Di, 01.07.",st:"FINAL",title:"Letzte Wiederholung",sessions:[
+    {type:"wdh",time:"0–10 min",text:"Alles was unter 80% lag im Quiz: in der Zusammenfassung nochmal nachlesen"},
+    {type:"pause",time:"10–12 min",text:"Pause"},
+    {type:"wdh",time:"12–20 min",text:"Übungsaufgaben 1–2 (Küstenformen) nochmal mündlich beantworten"},
+    {type:"wdh",time:"20–30 min",text:"Früh ins Bett! Ausgeruht in die Prüfung. Viel Erfolg! &#127919;"}
+  ]},
+];
+
+const TOPICS = [
+  {st:"Station 2",title:"Küstenformen",keys:["Fjordküste","Schärenküste","Deltaküste","Flachküste","Eiszeit","Sediment"],tip:"Merke: Fjord & Schäre = Eiszeit im Norden. Delta & Flach = Sediment/Strömung.",body:`<ul>
+<li><strong>Fjordküste</strong> (Norwegen): Gletscher erodierten tiefe U-Täler → Eis schmilzt → Meer läuft ein. Steile Felswände, tief. Nutzung: Lachszucht, Tourismus.</li>
+<li><strong>Schärenküste</strong> (Schweden): Gletscher schliffen Felsen flach ab → kleine runde Inseln. Nutzung: Baden, Kajak, Tourismus.</li>
+<li><strong>Deltaküste</strong> (Donau/Rumänien): Fluss trägt Sediment ins Meer → Delta wächst. Schwebebstoffe trüben Wasser. Nutzung: Naturschutz, Angeln.</li>
+<li><strong>Flachküste/Hakenküste</strong> (Niederlande): Sturmfluten, Deiche, Polder. IJsselmeer = 29 km langer Abschlussdeich. Nutzung: Landwirtschaft, Schifffahrt.</li>
+<li><strong>Nur im Norden:</strong> Fjord- und Schärenküsten entstehen durch Gletschererosion → Skandinavien war in der Eiszeit stark vergletschert, Südeuropa nicht.</li>
+</ul>`},
+  {st:"Station 3",title:"Überfischung",keys:["Fabrikschiff","Plankton","Beifang","MSC-Siegel","Fangquoten","Schonzeiten"],tip:"Flächendiagramm: 3 Zonen – nicht voll genutzt / voll genutzt / überfischt (wächst!)",body:`<ul>
+<li><strong>Hochseefischerei seit 1950:</strong> Sonar, Satelliten, Schleppnetze bis 2000 m Tiefe, Fabrikschiffe sortieren & frosten an Bord.</li>
+<li><strong>Plankton</strong> = Basis der Nahrungskette, lebt in den obersten 200 m.</li>
+<li><strong>Überfischung:</strong> Bestände erholen sich nicht → Artenvielfalt sinkt → Ökosystem kollabiert.</li>
+<li><strong>Beifang:</strong> Jungfische & ungewollte Arten werden mitgefangen und getötet.</li>
+<li><strong>Flächendiagramm 1976–2015:</strong> Anteil überfischter Bestände steigt von ~10% auf >30%. Anteil "nicht voll genutzt" sinkt stark.</li>
+<li><strong>Lösungen EU:</strong> Fangquoten, Maschenweite, Schonzeiten, Schutzgebiete. MSC-Siegel (1997, WWF/Unilever) für nachhaltigen Fischfang.</li>
+</ul>`},
+  {st:"Station 4",title:"Aquakultur",keys:["Käfignetz","Aquaponics","ASC-Siegel","Kreislauf","Antibiotika","Containerfarm"],tip:"Aquakultur entlastet Wildfang, löst das Problem aber nicht allein.",body:`<ul>
+<li><strong>Aquakultur</strong> = kontrollierte Aufzucht lebender Organismen (Fisch, Krebse, Algen) im Wasser.</li>
+<li><strong>Käfignetze</strong> (Fjorde Norwegens): Lachse in quasi-natürlicher Umgebung, einfach "geerntet".</li>
+<li><strong>Problem:</strong> Enge → Seuchen, Parasiten → Antibiotika/Pestizide → gelangen in Nahrungskette. Überdüngung.</li>
+<li><strong>Futterproblem:</strong> 1,2 kg Kleinfisch → 1 kg Lachs. Thunfisch kann nicht nachgezüchtet werden.</li>
+<li><strong>Aquaponics:</strong> Kreislaufsystem Fisch + Pflanze (Gewächshaus), geschlossen, sauber – noch teuer.</li>
+<li><strong>ASC-Siegel</strong> (2009, WWF): Standards für umweltgerechte Aquakultur, Kritik an Medikamenteneinsatz.</li>
+<li><strong>Bilanz:</strong> Aquakultur = 2016 schon fast gleich viel Ertrag wie Wildfang. Kein alleiniges Allheilmittel.</li>
+</ul>`},
+  {st:"Station 5",title:"Rotterdam / Europoort",keys:["TEU","Container","Güterumschlag","Rhein","Hinterland","Raffinerie"],tip:"Rotterdam: Lage + Tiefe + Hinterland + Infrastruktur = Erfolgsformel",body:`<ul>
+<li><strong>Rotterdam</strong> = 11. größter Hafen weltweit (Container), größter Europas. Nordsee, Rheinmündung.</li>
+<li><strong>TEU</strong> = Twenty Foot Equivalent Unit (20-Fuß-Container, ~6 m lang).</li>
+<li><strong>Standortvorteil:</strong> Tiefes Fahrwasser (24 m), Zugang via Rhein/Maas/Schiene/Pipeline zu ganz Westeuropa.</li>
+<li><strong>Güterumschlag Europoort:</strong> Erdöl 48%, Schüttgut 30%, Container 20%, Sonstiges 10%.</li>
+<li><strong>5 Raffinerien</strong> direkt im Hafen, Pipeline-Netz zu Deutschland & weiter. 180.000 Arbeitsplätze.</li>
+<li><strong>Vergleich Bamberg–Rotterdam:</strong> Schiff = 180 € statt 816 € per Lkw (fast 5× billiger pro Container).</li>
+<li><strong>Größte Container-Schiffe:</strong> OOCL Hongkong – 400 m lang, 59 m breit, 21.000 TEU.</li>
+</ul>`},
+  {st:"Station 6",title:"Nordsee-Rohstoffe",keys:["Troll A","Pipeline","Offshore","Raffinerie","Tanker","Erdgasfeld"],tip:"Säulendiagramm: Saudi-Arabien steigt, Norwegen sinkt (1996→2016).",body:`<ul>
+<li><strong>Nordsee</strong> = größtes Offshore-Fördergebiet Europas, >500 Plattformen.</li>
+<li><strong>Troll A</strong> (Norwegen): höchste Plattform der Welt (472 m), 100 km NW von Bergen, entdeckt 1979.</li>
+<li><strong>Förderung:</strong> Erkundung via Sprengung → Probebohrungen → Förderung mit Bohrmeißel.</li>
+<li><strong>Transport:</strong> Rohöl per Tanker oder Unterwasser-Pipeline → Festland → Raffinerie (UK, Norwegen, D).</li>
+<li><strong>Gefahren:</strong> Tankerunglücke, Lecks, Bohrfehler → Ölpest, Tod von Meereslebewesen, Strandverschmutzung.</li>
+<li><strong>Tabelle 4 (wichtigste Werte):</strong> Saudi-Arabien 445→586, Russland 303→554, USA 382→543, Norwegen 155→90 (sinkt!).</li>
+<li>Nordsee ist endlich – Alternativen (Windkraft) gewinnen an Bedeutung.</li>
+</ul>`},
+  {st:"Station 7",title:"Tourismus / Mallorca",keys:["Massentourismus","Tourismussteuer","Balearen","Mittelmeerklima","nachhaltig","Overtourismus"],tip:"Klimadiagramm Palma: heiß-trockener Sommer, milde Winter = Mittelmeerklima.",body:`<ul>
+<li><strong>Mallorca:</strong> 3.640 km², 859.300 Einwohner, aber 45,7 Mio. Übernachtungen (2017)!</li>
+<li><strong>Mittelmeerklima:</strong> Trocken-heiß im Sommer (Juli ~29°C, kaum Regen), mild im Winter.</li>
+<li><strong>Positive Effekte:</strong> Arbeitsplätze, Wirtschaftseinnahmen, Infrastruktur.</li>
+<li><strong>Negative Effekte:</strong> Lärm, Müll, Wasserknappheit, Flächenverbrauch, steigende Immobilienpreise, Umweltschäden.</li>
+<li><strong>Tourismussteuer</strong> ab 01.07.2016: Balearen-Parlament beschließt Steuer pro Übernachtung → Einnahmen für "grüne Projekte" / Nachhaltigkeit.</li>
+<li><strong>Nachhaltiger Tourismus:</strong> Naturschutz, Individualtourismus, lokale Wirtschaft stärken.</li>
+<li><strong>Mittelmeer-Karte:</strong> Frankreich, Spanien, Italien, Türkei = höchste Tourismus-Einkünfte.</li>
+</ul>`},
+  {st:"Station 8",title:"Wattenmeer",keys:["UNESCO","CWSS","trilateral","Wattenmeerplan","Nationalpark","Ökosystem"],tip:"3 Staaten – Niederlande 30%, Deutschland 60%, Dänemark 10%.",body:`<ul>
+<li><strong>Wattenmeer:</strong> 11.500 km², größtes Wattenmeer der Welt, UNESCO-Weltnaturerbe seit 2009.</li>
+<li><strong>Anteile:</strong> NL 30% / D 60% / DK 10%. Über 200 UNESCO-Weltnaturerbstätten.</li>
+<li><strong>Bedeutung:</strong> Lebensraum (Vögel, Fische, Robben), Nahrungsquelle, Tourismus, Bodenschätze.</li>
+<li><strong>Gefahren:</strong> Ölverschmutzung, Abwasser, Überfischung, Tourismus, Windkraftausbau.</li>
+<li><strong>Trilaterale Zusammenarbeit seit 1978:</strong> NL, D, DK kooperieren. 1985: CWSS gegründet. 1997 & 2010: Wattenmeerplan.</li>
+<li><strong>Digitale Überwachung:</strong> Satelliten, Radar, Flugzeuge → Ölfilme auf Meeresoberfläche erkennen.</li>
+<li>Problem: Unterschiedliche Gesetze & Interessen der 3 Länder erschweren gemeinsamen Schutz.</li>
+</ul>`},
+];
+
+const EXERCISES = [
+  {num:1,q:"Erkläre die Entstehung einer Fjordküste. Nenne dabei den geologischen Prozess, die Bedingungen und das Ergebnis.",hint:"Stichwörter: Eiszeit → Gletscher → Erosion → Meeresspiegel steigt",ans:`<ul>
+<li>In der letzten Eiszeit lagen riesige Gletscher über Skandinavien.</li>
+<li>Die Eismassen erodierten tiefe U-förmige Täler (Trogtäler) in das Gebirge.</li>
+<li>Als die Eiszeit endete (~10.000 v. Chr.), schmolzen die Gletscher und der Meeresspiegel stieg an.</li>
+<li>Das Meerwasser lief in die tiefen Täler ein → Fjorde mit steilen Felswänden entstanden.</li>
+<li>Nur in Nordeuropa (Skandinavien): Nur dort gab es starke Vergletscherung.</li>
+</ul>`},
+  {num:2,q:"Erstelle eine Tabelle mit den vier Küstenformen: Name | Merkmale | Entstehung | Europa-Beispiel | Nutzung",hint:"Fjord, Schäre, Delta, Flachküste – je eine Zeile",ans:`<strong>Fjordküste:</strong> Tiefe Meeresarme, steile Felswände | Gletschererosion + Meeresspiegel | Norwegen | Lachszucht, Tourismus<br>
+<strong>Schärenküste:</strong> Flache Felseninseln | Gletscher schliffen Felsen ab | Schweden | Baden, Segeln<br>
+<strong>Deltaküste:</strong> Sedimentablagerungen, Mündungsgebiet | Flusssediment + stehendes Meer | Rumänien (Donau) | Naturschutz, Fischerei<br>
+<strong>Flachküste:</strong> Sandig, flach, Sturmflutgefahr | Meeresströmungen + Wind | Niederlande | Landwirtschaft (Polder), Schifffahrt`},
+  {num:3,q:"Werte das Flächendiagramm zur weltweiten Entwicklung der Fischbestände (1976–2015) nach der 4-Schritt-Methode aus.",hint:"1. Einordnen 2. Beschreiben (Zahlen!) 3. Erklären 4. Bewerten",ans:`<strong>1. Einordnen:</strong> Flächendiagramm, Quelle: FAO, Zeitraum 1976–2015, zeigt Anteile der Fischbestände in %.<br>
+<strong>2. Beschreiben:</strong> Anteil überfischter Bestände stieg von ca. 10% (1976) auf über 33% (2015). Anteil "nicht voll genutzt" sank stark von ~40% auf unter 10%. "Voll genutzt" blieb relativ konstant bei ~55%.<br>
+<strong>3. Erklären:</strong> Moderne Fabrikschiffe, Sonar und Hightech-Fangmethoden ermöglichen Fischfang bis 2000 m. Zu viele Fische werden gefangen → Bestände erholen sich nicht.<br>
+<strong>4. Bewerten:</strong> Besorgniserregende Entwicklung. Ohne Gegenmaßnahmen droht Zusammenbruch der Ökosysteme und Verlust der Nahrungsgrundlage für Millionen Menschen.`},
+  {num:4,q:"Erkläre, warum sich Rotterdam zum größten Hafen Europas entwickelt hat. Entwickle dazu ein Schaubild mit mindestens 4 Faktoren.",hint:"Lage / Tiefe / Hinterland / Infrastruktur / Wirtschaft",ans:`<strong>Zentrum: ROTTERDAM = Europas größter Hafen</strong><br><br>
+→ <strong>Geographische Lage:</strong> Rheinmündung + Nordsee + tiefes Fahrwasser (24 m) → auch größte Schiffe können anlaufen<br>
+→ <strong>Hinterland:</strong> Rhein, Maas, Kanäle, Pipeline, Eisenbahn → ganz West- & Mitteleuropa erreichbar<br>
+→ <strong>Infrastruktur:</strong> 5 Raffinerien direkt im Hafen, 180.000 Arbeitsplätze, moderne Containerterminals<br>
+→ <strong>Wirtschaftlichkeit:</strong> Schiff = billigster Transport der Welt. Container Rotterdam→Abidjan: nur 180 € statt 816 € per Lkw<br>
+→ <strong>Industrialisierung:</strong> Ruhrgebiet-Anbindung → Massengüter (Kohle, Erz) historisch wichtig`},
+  {num:5,q:"Nenne und erkläre 3 positive und 3 negative Auswirkungen des Massentourismus auf Mallorca.",hint:"Denke an: Wirtschaft, Umwelt, Bevölkerung, Infrastruktur",ans:`<strong>Positiv:</strong><br>
+<ul>
+<li>Wirtschaftswachstum: Tourismus = wichtigster Wirtschaftszweig, Devisen fließen ins Land</li>
+<li>Arbeitsplätze: Hotels, Restaurants, Transport – viele Jobs für Einheimische</li>
+<li>Infrastruktur: Straßen, Flughafen, Versorgung werden ausgebaut</li>
+</ul>
+<strong>Negativ:</strong><br>
+<ul>
+<li>Umweltschäden: Lärm, Müll, Wasserverschmutzung, Flächenverbrauch durch Hotelanlagen</li>
+<li>Wasserknappheit: Millionen Touristen verbrauchen riesige Mengen Wasser auf der trockenen Insel</li>
+<li>Steigende Preise: Immobilienpreise steigen → Einheimische können sich Wohnen kaum noch leisten</li>
+</ul>`},
+];
+
+const QUIZ = [
+  {q:"Welche Küstenform entstand durch eiszeitliche Gletschererosion und anschließendes Eindringen von Meerwasser in tiefe Täler?",opts:["Deltaküste","Flachküste","Fjordküste","Schärenküste"],a:2},
+  {q:"Was bedeutet 'TEU' im Hafenwesen?",opts:["Trans European Unit","Twenty Foot Equivalent Unit","Total Export Usage","Transport Efficiency Unit"],a:1},
+  {q:"Seit wann ist das Wattenmeer UNESCO-Weltnaturerbe?",opts:["1985","1997","2009","2014"],a:2},
+  {q:"Welches Land hat den größten Anteil am Wattenmeer (~60%)?",opts:["Niederlande","Dänemark","Deutschland","Großbritannien"],a:2},
+  {q:"Wofür steht das MSC-Gütesiegel?",opts:["Maximal Seafood Catch","Marine Stewardship Council – nachhaltiger Fischfang","Minimum Safety Certificate","Maritime Supply Control"],a:1},
+  {q:"Warum hat Rotterdam einen so großen Standortvorteil als Hafen?",opts:["Es liegt am Mittelmeer","Es liegt an der Rheinmündung mit tiefem Fahrwasser","Es hat den größten Flughafen Europas","Es ist Hauptstadt der Niederlande"],a:1},
+  {q:"Warum gibt es Fjord- und Schärenküsten nur im Norden Europas?",opts:["Weil dort mehr Regen fällt","Weil die Nordsee viel tiefer ist","Weil nur Nordeuropa stark vergletschert war","Weil dort keine Flüsse ins Meer münden"],a:2},
+  {q:"Was ist das Hauptproblem bei Aquakulturen in Käfignetzen?",opts:["Zu wenig Platz für Netz","Übertragung von Krankheiten & Parasiten","Zu kaltes Wasser","Zu viel Sauerstoff im Wasser"],a:1},
+  {q:"Wie hat sich Norwegens Erdölförderung von 1996 bis 2016 entwickelt?",opts:["Stark gestiegen (155 → 300)","Gleich geblieben (~155)","Gesunken (155 → 90)","Erst gestiegen, dann gesunken"],a:2},
+  {q:"Welche Maßnahme hat die Balearenregierung 2016 gegen Massentourismus eingeführt?",opts:["Tourismusverbot im Juli","Tourismussteuer pro Übernachtung","Begrenzung der Hotelbetten","Reiseverbote aus Nordeuropa"],a:1},
+  {q:"Welche Küstenform entsteht durch Flusssedimentablagerungen (z.B. Donau ins Schwarze Meer)?",opts:["Fjordküste","Schärenküste","Flachküste","Deltaküste"],a:3},
+  {q:"Was zeigt das Flächendiagramm zur weltweiten Fischbestandsentwicklung 1976–2015?",opts:["Fischpreise sind gestiegen","Der Anteil überfischter Bestände ist von ~10% auf über 30% gestiegen","Aquakultur hat Wildfang komplett ersetzt","Fischfang ist insgesamt weniger geworden"],a:1},
+  {q:"Welche Organisation betreibt die trilaterale Zusammenarbeit zum Schutz des Wattenmeers?",opts:["UNESCO allein","CWSS (Common Wadden Sea Secretariat)","EU-Kommission","Greenpeace International"],a:1},
+  {q:"Wie viele Übernachtungen gab es auf Mallorca im Jahr 2017?",opts:["4,57 Mio.","12,3 Mio.","29,9 Mio.","45,7 Mio."],a:3},
+];
+
+let doneDays = new Set();
+let qIdx = 0, score = 0, answered = false, shuffled = [];
+
+function showPanel(id, btn) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('panel-' + id).classList.add('active');
+  if(btn) btn.classList.add('active');
+}
+
+function updateCountdown() {
+  const exam = new Date('2026-07-02T08:00:00');
+  const now = new Date();
+  const diff = Math.ceil((exam - now) / (1000*60*60*24));
+  const el = document.getElementById('countdown');
+  if(diff > 0) el.textContent = '📅 Noch ' + diff + ' Tag' + (diff===1?'':'e') + ' bis zur Schulaufgabe (Do, 02.07.2026)';
+  else if(diff === 0) el.textContent = '🎯 Heute ist die Schulaufgabe – viel Erfolg!';
+  else { el.style.background = '#e8f5e9'; el.style.color = '#1a4731'; el.style.borderColor='#a5d6a7'; el.textContent = '✓ Die Schulaufgabe ist vorbei – gut gemacht!'; }
+}
+
+function buildDays() {
+  const c = document.getElementById('days-container');
+  DAYS.forEach((d, i) => {
+    const isLast = i === DAYS.length - 1;
+    const div = document.createElement('div');
+    div.className = 'day-card';
+    const badges = `<span class="badge badge-date">${d.date}</span><span class="badge badge-st">${d.st}</span>`;
+    const sess = d.sessions.map(s =>
+      `<div class="session"><span class="stime">${s.time}</span><span class="sblock ${s.type}">${s.text}</span></div>`
+    ).join('');
+    div.innerHTML = `<div class="day-header">${badges}<span class="day-title">${d.title}</span><button class="done-btn" id="done-${i}" onclick="markDone(${i})">✓ Erledigt</button></div>${sess}`;
+    c.appendChild(div);
+  });
+  const exam = document.createElement('div');
+  exam.className = 'day-card';
+  exam.innerHTML = `<div class="day-header"><span class="badge badge-exam">Do, 02.07.</span><span class="day-title" style="font-weight:600;color:#9B1C1C">🎯 SCHULAUFGABE – Geographie Klasse 7</span></div><div class="session"><span class="stime">Schule</span><span class="sblock lern">Gut ausgeschlafen, Stift & Lineal dabei – du bist vorbereitet!</span></div>`;
+  c.appendChild(exam);
+}
+
+function markDone(i) {
+  const btn = document.getElementById('done-' + i);
+  if(doneDays.has(i)) { doneDays.delete(i); btn.classList.remove('done'); btn.textContent = '✓ Erledigt'; }
+  else { doneDays.add(i); btn.classList.add('done'); btn.textContent = '✓ Fertig!'; }
+  const pct = Math.round(doneDays.size / DAYS.length * 100);
+  document.getElementById('prog-fill').style.width = pct + '%';
+  document.getElementById('prog-label').textContent = doneDays.size + ' von ' + DAYS.length + ' Einheiten erledigt';
+  document.getElementById('prog-pct').textContent = pct + '%';
+}
+
+function buildTopics() {
+  const c = document.getElementById('topics-container');
+  TOPICS.forEach((t, i) => {
+    const div = document.createElement('div');
+    div.className = 'topic-card';
+    const kws = t.keys.map(k => `<span class="kw">${k}</span>`).join('');
+    div.innerHTML = `<div class="topic-hdr" onclick="toggleTopic(${i})">
+      <span class="st-tag">${t.st}</span>
+      <span class="ttitle">${t.title}</span>
+      <span class="chev" id="chev-${i}">▸</span>
+    </div>
+    <div class="topic-body" id="tbody-${i}">
+      <div class="kw-wrap">${kws}</div>
+      ${t.body}
+      <div class="tip-box">💡 Merke: ${t.tip}</div>
+    </div>`;
+    c.appendChild(div);
+  });
+}
+
+function toggleTopic(i) {
+  const b = document.getElementById('tbody-' + i);
+  const ch = document.getElementById('chev-' + i);
+  b.classList.toggle('open');
+  ch.textContent = b.classList.contains('open') ? '▾' : '▸';
+}
+
+function buildExercises() {
+  const c = document.getElementById('exercises-container');
+  EXERCISES.forEach((e, i) => {
+    const div = document.createElement('div');
+    div.className = 'ex-card';
+    div.innerHTML = `<div class="ex-num">Aufgabe ${e.num}</div>
+      <div class="ex-q">${e.q}</div>
+      <div class="ex-hint">💡 Tipp: ${e.hint}</div>
+      <button class="show-btn" onclick="toggleAns(${i}, this)">Musterlösung anzeigen</button>
+      <div class="answer" id="ans-${i}"><strong>Musterlösung:</strong><br><br>${e.ans}</div>`;
+    c.appendChild(div);
+  });
+}
+
+function toggleAns(i, btn) {
+  const a = document.getElementById('ans-' + i);
+  a.classList.toggle('open');
+  btn.textContent = a.classList.contains('open') ? 'Musterlösung verbergen' : 'Musterlösung anzeigen';
+}
+
+function shuffle(arr) { return arr.slice().sort(() => Math.random() - 0.5); }
+
+function initQuiz() { shuffled = shuffle(QUIZ); qIdx = 0; score = 0; answered = false; renderQ(); }
+
+function renderQ() {
+  if(qIdx >= shuffled.length) { showScore(); return; }
+  const q = shuffled[qIdx];
+  document.getElementById('q-text').textContent = q.q;
+  document.getElementById('q-counter').textContent = 'Frage ' + (qIdx+1) + ' von ' + shuffled.length;
+  document.getElementById('q-score').textContent = score + ' richtig';
+  document.getElementById('q-fb').textContent = '';
+  answered = false;
+  const opts = document.getElementById('q-opts');
+  opts.innerHTML = '';
+  q.opts.forEach((o, i) => {
+    const b = document.createElement('button');
+    b.className = 'qopt'; b.textContent = o;
+    b.onclick = () => selectOpt(i, b, q.a);
+    opts.appendChild(b);
+  });
+}
+
+function selectOpt(i, btn, correct) {
+  if(answered) return; answered = true;
+  const opts = document.querySelectorAll('.qopt');
+  opts.forEach(o => { o.disabled = true; });
+  if(i === correct) {
+    btn.classList.add('correct'); score++;
+    document.getElementById('q-fb').textContent = '✓ Richtig!';
+  } else {
+    btn.classList.add('wrong');
+    opts[correct].classList.add('correct');
+    document.getElementById('q-fb').textContent = '✗ Leider falsch – die richtige Antwort ist grün markiert.';
+  }
+  document.getElementById('q-score').textContent = score + ' richtig';
+}
+
+function nextQ() { qIdx++; renderQ(); }
+
+function showScore() {
+  document.getElementById('quiz-container').style.display = 'none';
+  document.getElementById('score-box').style.display = 'block';
+  const pct = Math.round(score / shuffled.length * 100);
+  document.getElementById('score-num').textContent = score + '/' + shuffled.length;
+  document.getElementById('score-pct').textContent = pct + '% korrekt';
+  let msg;
+  if(pct >= 85) msg = '🎉 Ausgezeichnet! Du bist super vorbereitet!';
+  else if(pct >= 70) msg = '👍 Gut! Noch 1–2 Themen wiederholen.';
+  else if(pct >= 55) msg = '📖 Okay – Zusammenfassung nochmal durchlesen!';
+  else msg = '💪 Weitermachen – du schaffst das! Nochmal üben.';
+  document.getElementById('score-msg').textContent = msg;
+}
+
+function restartQuiz() {
+  document.getElementById('quiz-container').style.display = '';
+  document.getElementById('score-box').style.display = 'none';
+  initQuiz();
+}
+
+updateCountdown();
+buildDays();
+buildTopics();
+buildExercises();
+initQuiz();
+</script>
+</body>
+</html>
